@@ -1,0 +1,20 @@
+{
+  "name": "karbone-k",
+  "version": "1.0.0",
+  "description": "Karboneʞ - Fullstack Event Management Platform",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "dev": "cd backend && npm run dev",
+    "start": "cd backend && npm start",
+    "build": "cd backend && npm run build",
+    "postinstall": "cd backend && npm install --legacy-peer-deps && cd ../frontend && npm install --legacy-peer-deps && npm run build",
+    "db:push": "cd backend && npm run db:push",
+    "db:seed": "cd backend && npm run db:seed",
+    "db:studio": "cd backend && npm run db:studio"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
