@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "build": "cd ../frontend && npm install && npm run build",
-    "postinstall": "npm run build",
+    "build": "cd ../frontend && npm install --legacy-peer-deps && npm run build",
     "db:push": "prisma db push",
     "db:seed": "node prisma/seed.js",
     "db:studio": "prisma studio"
