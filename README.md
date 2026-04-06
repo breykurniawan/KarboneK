@@ -53,6 +53,33 @@ Frontend berjalan di: http://localhost:5173
 - Admin dashboard (CRUD event dengan toggle non-anggota, kelola anggota, berita)
 - 10 event selesai + 3 event akan datang sebagai data awal
 
+## Deployment
+
+Aplikasi dapat di-deploy di berbagai platform:
+
+### Railway.app (Recommended)
+
+Deployment termudah dengan automatic scaling dan managed PostgreSQL.
+
+```bash
+# 1. Connect GitHub repo ke Railway
+# 2. Set environment variables (JWT_SECRET, CORS_ORIGIN)
+# 3. Railway akan auto-deploy
+```
+
+📖 **Panduan detail:** [RAILWAY-DEPLOYMENT.md](RAILWAY-DEPLOYMENT.md)
+
+### Raspberry Pi / Self-Hosted
+
+Deploy menggunakan Docker + Nginx di server sendiri.
+
+```bash
+# Setup & deploy
+bash deploy.sh
+```
+
+📖 **Panduan detail:** [DEPLOYMENT.md](DEPLOYMENT.md)
+
 ---
 
 **Website Karboneʞ - Tempat berkembang bersama!**

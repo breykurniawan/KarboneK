@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import { PrismaClient } from "@prisma/client";
+import path from "path";
+import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js";
 import eventRoutes from "./routes/events.js";
 import memberRoutes from "./routes/members.js";
@@ -10,6 +12,10 @@ import bracketRoutes from "./routes/bracket.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Get __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Initialize Prisma
 const prisma = new PrismaClient();
@@ -32,6 +38,23 @@ app.use("/api/gallery", galleryRoutes);
 app.use("/api/bracket", bracketRoutes);
 
 app.get("/api/health", (_, res) => res.json({ status: "ok", message: "Server berjalan" }));
+
+// Serve frontend static files from dist folder
+const distPath = path.join(__dirname, "../../frontend/dist");
+app.use(express.static(distPath));
+
+// SPA fallback - serve index.html untuk semua non-API routes
+app.get("*", (req, res) => {
+  // Jangan override API routes
+  if (req.path.startsWith("/api")) {
+    return res.status(404).json({ error: "API endpoint not found" });
+  }
+  res.sendFile(path.join(distPath, "index.html"), (err) => {
+    if (err) {
+      res.status(500).json({ error: "Could not load application" });
+    }
+  });
+});
 
 const server = app.listen(PORT, () => {
   console.log(`🚀 Server berjalan di http://localhost:${PORT}`);
