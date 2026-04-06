@@ -30,7 +30,7 @@ export default function Register() {
         <div className="text-center mb-8">
           <div className="text-5xl mb-3">🏓</div>
           <h1 className="text-2xl font-bold text-gray-900">Daftar Anggota Baru</h1>
-          <p className="text-gray-600 mt-1">Club Tenis Meja Garuda</p>
+          <p className="text-gray-600 mt-1">Karboneʞ</p>
         </div>
         <div className="card">
           <form onSubmit={handleSubmit} className="space-y-4">

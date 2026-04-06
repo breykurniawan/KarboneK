@@ -19,22 +19,46 @@ async function main() {
   // Admin user
   const adminPassword = await bcrypt.hash("admin123", 10);
   const admin = await prisma.user.upsert({
-    where: { email: "admin@pingpongclub.com" },
+    where: { email: "admin@karbone-k.id" },
     update: {},
     create: {
       name: "Admin Club",
-      email: "admin@pingpongclub.com",
+      email: "admin@karbone-k.id",
       password: adminPassword,
       role: "admin",
       phone: "08123456789",
     },
   });
 
+  // 3 Demo Member Users
+  const demoMembers = [
+    { name: "Adi Kusuma", email: "adi@karbone-k.id", password: "adi123" },
+    { name: "Siti Rahayu", email: "siti@karbone-k.id", password: "siti123" },
+    { name: "Roni Wijaya", email: "roni@karbone-k.id", password: "roni123" },
+  ];
+
+  const demMemberUsers = [];
+  for (const demo of demoMembers) {
+    const pw = await bcrypt.hash(demo.password, 10);
+    const user = await prisma.user.upsert({
+      where: { email: demo.email },
+      update: {},
+      create: {
+        name: demo.name,
+        email: demo.email,
+        password: pw,
+        role: "member",
+        phone: "08155555555",
+      },
+    });
+    demMemberUsers.push(user);
+  }
+
   // Buat 40 user member untuk peserta
   const memberUsers = [];
   for (let i = 0; i < playerNames.length; i++) {
     const name = playerNames[i];
-    const email = `player${i + 1}@pingpongclub.com`;
+    const email = `player${i + 1}@karbone-k.id`;
     const pw = await bcrypt.hash("player123", 10);
     const user = await prisma.user.upsert({
       where: { email },
@@ -98,7 +122,7 @@ async function main() {
     },
     {
       title: "Turnamen HUT Club ke-15",
-      description: "Turnamen spesial memperingati HUT Club Tenis Meja Garuda ke-15.",
+      description: "Turnamen spesial memperingati HUT Karboneʞ ke-15.",
       category: "single", level: "open",
       startDate: new Date("2025-06-20"), endDate: new Date("2025-06-22"),
       registrationDeadline: new Date("2025-06-10"),
@@ -180,6 +204,47 @@ async function main() {
       maxParticipants: 8, fee: 200000, nonMemberFee: 350000, allowNonMember: true,
       prize: "Rp 3.000.000 per pasangan", status: "upcoming",
     },
+    // 4 event baru tanpa registrasi (1 untuk setiap level)
+    {
+      title: "Turnamen Terbuka Level Open - Mei 2026",
+      description: "Turnamen khusus untuk pemain open level. Terbuka untuk semua peserta tanpa batasan kemampuan. Pendaftaran dibuka dengan kuota terbatas.",
+      category: "single", level: "open",
+      startDate: new Date("2026-05-24"), endDate: new Date("2026-05-25"),
+      registrationDeadline: new Date("2026-05-20"),
+      location: "GOR Menteng, Jakarta",
+      maxParticipants: 32, fee: 100000, nonMemberFee: 175000, allowNonMember: true,
+      prize: "Rp 2.000.000 / Rp 1.000.000 / Rp 500.000", status: "upcoming",
+    },
+    {
+      title: "Turnamen Pemula - Mei 2026",
+      description: "Turnamen khusus untuk pemain pemula yang ingin belajar dan berkembang. Cocok untuk pemula yang baru mulai bermain tenis meja.",
+      category: "single", level: "beginner",
+      startDate: new Date("2026-05-31"), endDate: new Date("2026-05-31"),
+      registrationDeadline: new Date("2026-05-27"),
+      location: "Aula SMAN 3 Jakarta",
+      maxParticipants: 24, fee: 75000, nonMemberFee: 125000, allowNonMember: true,
+      prize: "Trofi + Sertifikat + Rp 500.000", status: "upcoming",
+    },
+    {
+      title: "Liga Menengah - Juni 2026",
+      description: "Kompetisi untuk pemain level menengah yang sudah berpengalaman. Sistem gugur dengan hadiah menarik.",
+      category: "single", level: "intermediate",
+      startDate: new Date("2026-06-14"), endDate: new Date("2026-06-14"),
+      registrationDeadline: new Date("2026-06-10"),
+      location: "Sekretariat Club",
+      maxParticipants: 16, fee: 100000, nonMemberFee: 0, allowNonMember: false,
+      prize: "Trofi + Rp 1.500.000", status: "upcoming",
+    },
+    {
+      title: "Turnamen Tingkat Lanjut - Juni 2026",
+      description: "Turnamen untuk pemain advanced yang menguasai teknik tinggi. Kompetisi sengit dengan pemain-pemain berpengalaman.",
+      category: "single", level: "advanced",
+      startDate: new Date("2026-06-21"), endDate: new Date("2026-06-21"),
+      registrationDeadline: new Date("2026-06-17"),
+      location: "Sekretariat Club",
+      maxParticipants: 8, fee: 150000, nonMemberFee: 0, allowNonMember: false,
+      prize: "Rp 3.000.000 / Rp 1.500.000 / Rp 750.000", status: "upcoming",
+    },
   ];
 
   await prisma.event.createMany({ data: [...completedEvents, ...upcomingEvents] });
@@ -238,8 +303,8 @@ async function main() {
   await prisma.news.createMany({
     data: [
       {
-        title: "Selamat Datang di Club Tenis Meja Garuda",
-        content: "Club Tenis Meja Garuda resmi membuka pendaftaran anggota baru untuk tahun 2026. Bergabunglah bersama kami dan tingkatkan kemampuan tenis meja Anda bersama pelatih berpengalaman.",
+        title: "Selamat Datang di Karboneʞ",
+        content: "Karboneʞ resmi membuka pendaftaran anggota baru untuk tahun 2026. Bergabunglah bersama kami dan tingkatkan kemampuan tenis meja Anda bersama pelatih berpengalaman.",
         author: "Admin Club",
       },
       {
@@ -249,7 +314,7 @@ async function main() {
       },
       {
         title: "Prestasi Anggota di Kejuaraan Nasional",
-        content: "Selamat kepada anggota kita yang berhasil meraih medali perak di Kejuaraan Tenis Meja Nasional 2025. Kebanggaan bagi seluruh keluarga besar Club Tenis Meja Garuda.",
+        content: "Selamat kepada anggota kita yang berhasil meraih medali perak di Kejuaraan Tenis Meja Nasional 2025. Kebanggaan bagi seluruh keluarga besar Karboneʞ.",
         author: "Admin Club",
       },
     ],

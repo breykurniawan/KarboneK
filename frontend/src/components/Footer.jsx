@@ -7,10 +7,10 @@ export default function Footer() {
         <div>
           <div className="flex items-center gap-2 font-bold text-xl mb-3">
             <span className="text-2xl">🏓</span>
-            <span>Club TM Garuda</span>
+            <span>Karboneʞ</span>
           </div>
-          <p className="text-blue-200 text-sm">
-            Club Tenis Meja Garuda berdiri sejak 2010, berkomitmen mengembangkan atlet tenis meja berprestasi.
+          <p className="text-gray-600 text-sm">
+            Karboneʞ berdiri sejak 2010, berkomitmen mengembangkan atlet tenis meja berprestasi.
           </p>
         </div>
         <div>
@@ -27,13 +27,13 @@ export default function Footer() {
           <ul className="space-y-2 text-sm text-blue-200">
             <li>📍 Jl. Olahraga No. 10, Jakarta</li>
             <li>📞 (021) 1234-5678</li>
-            <li>✉️ info@clubtmgaruda.id</li>
+            <li>✉️ info@karbone-k.id</li>
             <li>🕐 Latihan: Selasa, Kamis 18.00 | Sabtu 08.00</li>
           </ul>
         </div>
       </div>
       <div className="border-t border-blue-800 text-center py-4 text-sm text-blue-300">
-        © 2026 Club Tenis Meja Garuda. All rights reserved.
+        © 2026 Karboneʞ. All rights reserved.
       </div>
     </footer>
   );

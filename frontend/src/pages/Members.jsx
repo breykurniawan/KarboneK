@@ -17,7 +17,7 @@ export default function Members() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
       <h1 className="text-3xl font-bold text-gray-900 mb-2">Anggota Club</h1>
-      <p className="text-gray-600 mb-8">Kenali para anggota aktif Club Tenis Meja Garuda.</p>
+      <p className="text-gray-600 mb-8">Kenali para anggota aktif Karboneʞ.</p>
 
       <input
         type="text"

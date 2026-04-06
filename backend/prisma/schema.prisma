@@ -49,6 +49,8 @@ model Registration {
   userId          Int?     // null jika non-anggota
   eventId         Int
   participantType String   @default("member") // member | non_member
+  category        String   @default("single") // single | double | team - pilihan peserta
+  level           String   @default("open") // open | beginner | intermediate | advanced - pilihan peserta
   // Data non-anggota (diisi jika participantType = non_member)
   guestName       String?
   guestEmail      String?

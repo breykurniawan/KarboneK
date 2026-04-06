@@ -1,6 +1,6 @@
-# Club Tenis Meja Garuda - Website Fullstack
+# Karboneʞ - Website Fullstack
 
-Website club tenis meja lengkap dengan manajemen event, anggota, berita, dan admin dashboard.
+Website Karboneʞ lengkap dengan manajemen event, anggota, berita, dan admin dashboard.
 
 ## Tech Stack
 
@@ -34,10 +34,12 @@ Frontend berjalan di: http://localhost:5173
 
 ## Akun Demo
 
-| Role  | Email                      | Password  |
-|-------|----------------------------|-----------|
-| Admin | admin@pingpongclub.com     | admin123  |
-| Member| member@pingpongclub.com    | member123 |
+| Role    | Email                    | Password  |
+|---------|--------------------------|-----------|
+| Admin   | admin@karbone-k.id       | admin123  |
+| Member  | adi@karbone-k.id         | adi123    |
+| Member  | siti@karbone-k.id        | siti123   |
+| Member  | roni@karbone-k.id        | roni123   |
 
 ## Fitur
 
@@ -50,3 +52,7 @@ Frontend berjalan di: http://localhost:5173
 - Auth (register/login/profil)
 - Admin dashboard (CRUD event dengan toggle non-anggota, kelola anggota, berita)
 - 10 event selesai + 3 event akan datang sebagai data awal
+
+---
+
+**Website Karboneʞ - Tempat berkembang bersama!**

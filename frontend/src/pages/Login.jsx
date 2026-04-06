@@ -29,7 +29,7 @@ export default function Login() {
         <div className="text-center mb-8">
           <div className="text-5xl mb-3">🏓</div>
           <h1 className="text-2xl font-bold text-gray-900">Masuk ke Akun</h1>
-          <p className="text-gray-600 mt-1">Club Tenis Meja Garuda</p>
+          <p className="text-gray-600 mt-1">Karboneʞ</p>
         </div>
         <div className="card">
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -51,8 +51,34 @@ export default function Login() {
             Belum punya akun?{" "}
             <Link to="/register" className="text-blue-600 hover:underline font-medium">Daftar sekarang</Link>
           </p>
-          <div className="mt-4 p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
-            <strong>Demo:</strong> admin@pingpongclub.com / admin123
+
+          {/* Demo Accounts */}
+          <div className="mt-6 space-y-2">
+            <div className="bg-blue-50 rounded-lg p-3">
+              <div className="font-semibold text-blue-900 text-sm mb-2">👨‍💼 Admin</div>
+              <div className="text-xs text-blue-700 space-y-1">
+                <div><span className="font-mono bg-white px-2 py-1 rounded">admin@karbone-k.id</span></div>
+                <div><span className="font-mono bg-white px-2 py-1 rounded">admin123</span></div>
+              </div>
+            </div>
+
+            <div className="bg-green-50 rounded-lg p-3">
+              <div className="font-semibold text-green-900 text-sm mb-2">👥 Anggota Demo</div>
+              <div className="text-xs text-green-700 space-y-2">
+                <div>
+                  <div className="font-medium">Adi Kusuma</div>
+                  <div><span className="font-mono bg-white px-2 py-1 rounded text-xs">adi@karbone-k.id</span> / <span className="font-mono bg-white px-2 py-1 rounded text-xs">adi123</span></div>
+                </div>
+                <div>
+                  <div className="font-medium">Siti Rahayu</div>
+                  <div><span className="font-mono bg-white px-2 py-1 rounded text-xs">siti@karbone-k.id</span> / <span className="font-mono bg-white px-2 py-1 rounded text-xs">siti123</span></div>
+                </div>
+                <div>
+                  <div className="font-medium">Roni Wijaya</div>
+                  <div><span className="font-mono bg-white px-2 py-1 rounded text-xs">roni@karbone-k.id</span> / <span className="font-mono bg-white px-2 py-1 rounded text-xs">roni123</span></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

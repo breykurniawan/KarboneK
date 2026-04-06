@@ -13,7 +13,7 @@ export default function News() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
       <h1 className="text-3xl font-bold text-gray-900 mb-2">Berita & Pengumuman</h1>
-      <p className="text-gray-600 mb-8">Informasi terbaru dari Club Tenis Meja Garuda.</p>
+      <p className="text-gray-600 mb-8">Informasi terbaru dari Karboneʞ.</p>
 
       {loading ? (
         <div className="text-center py-16 text-gray-500">Memuat berita...</div>

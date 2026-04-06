@@ -26,7 +26,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 font-bold text-xl">
             <span className="text-2xl">🏓</span>
-            <span>Club TM Garuda</span>
+            <span>Karboneʞ</span>
           </Link>
 
           {/* Desktop nav */}

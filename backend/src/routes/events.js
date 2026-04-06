@@ -112,7 +112,17 @@ router.post("/:id/register", authenticate, async (req, res) => {
   try {
     const eventId = Number(req.params.id);
     const userId = req.user.id;
+    const { category, level } = req.body;
 
+    if (!category || !level) {
+      return res.status(400).json({ message: "Kategori dan level wajib dipilih" });
+    }
+
+    // Verify user exists
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return res.status(404).json({ message: "User tidak ditemukan" });
+
+    // Verify event exists
     const event = await prisma.event.findUnique({
       where: { id: eventId },
       include: { _count: { select: { registrations: true } } },
@@ -124,14 +134,29 @@ router.post("/:id/register", authenticate, async (req, res) => {
     if (event._count.registrations >= event.maxParticipants)
       return res.status(400).json({ message: "Kuota peserta sudah penuh" });
 
+    // Check if already registered
+    const existing = await prisma.registration.findUnique({
+      where: { userId_eventId: { userId, eventId } }
+    });
+    if (existing) return res.status(400).json({ message: "Anda sudah terdaftar di event ini" });
+
     const reg = await prisma.registration.create({
-      data: { userId, eventId, participantType: "member", feeCharged: event.fee },
+      data: {
+        userId,
+        eventId,
+        participantType: "member",
+        category,
+        level,
+        feeCharged: event.fee,
+      },
       include: { event: true, user: { select: { id: true, name: true, email: true } } },
     });
     res.status(201).json(reg);
   } catch (err) {
+    console.error("Registration error:", err);
     if (err.code === "P2002") return res.status(400).json({ message: "Anda sudah terdaftar di event ini" });
-    res.status(500).json({ message: err.message });
+    if (err.code === "P2025") return res.status(404).json({ message: "Event atau user tidak ditemukan" });
+    res.status(500).json({ message: err.message || "Gagal mendaftar" });
   }
 });
 
@@ -139,11 +164,16 @@ router.post("/:id/register", authenticate, async (req, res) => {
 router.post("/:id/register-guest", async (req, res) => {
   try {
     const eventId = Number(req.params.id);
-    const { guestName, guestEmail, guestPhone } = req.body;
+    const { guestName, guestEmail, guestPhone, category, level } = req.body;
 
     if (!guestName || !guestEmail || !guestPhone)
       return res.status(400).json({ message: "Nama, email, dan nomor telepon wajib diisi" });
 
+    if (!category || !level) {
+      return res.status(400).json({ message: "Kategori dan level wajib dipilih" });
+    }
+
+    // Verify event exists
     const event = await prisma.event.findUnique({
       where: { id: eventId },
       include: { _count: { select: { registrations: true } } },
@@ -170,13 +200,17 @@ router.post("/:id/register-guest", async (req, res) => {
         guestName,
         guestEmail,
         guestPhone,
+        category,
+        level,
         feeCharged: event.nonMemberFee,
       },
       include: { event: true },
     });
     res.status(201).json(reg);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("Guest registration error:", err);
+    if (err.code === "P2025") return res.status(404).json({ message: "Event tidak ditemukan" });
+    res.status(500).json({ message: err.message || "Gagal mendaftar" });
   }
 });
 

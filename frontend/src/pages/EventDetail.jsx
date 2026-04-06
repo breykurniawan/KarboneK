@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import api from "../lib/api";
 import { useAuth } from "../context/AuthContext";
+import EventRegistrationModal from "../components/EventRegistrationModal";
 
 const statusColor = { upcoming: "bg-green-100 text-green-800", ongoing: "bg-blue-100 text-blue-800", completed: "bg-gray-100 text-gray-800", cancelled: "bg-red-100 text-red-800" };
 const statusLabel = { upcoming: "Akan Datang", ongoing: "Berlangsung", completed: "Selesai", cancelled: "Dibatalkan" };
@@ -12,11 +13,8 @@ export default function EventDetail() {
   const { user } = useAuth();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [registering, setRegistering] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
-  const [showGuestForm, setShowGuestForm] = useState(false);
-  const [guestForm, setGuestForm] = useState({ guestName: "", guestEmail: "", guestPhone: "" });
-  const [guestSuccess, setGuestSuccess] = useState(null);
+  const [showRegistrationModal, setShowRegistrationModal] = useState(false);
 
   const fetchEvent = () =>
     api.get(`/events/${id}`).then((r) => {
@@ -26,21 +24,6 @@ export default function EventDetail() {
     });
 
   useEffect(() => { fetchEvent(); }, [id, user]);
-
-  const handleRegister = async () => {
-    if (!user) return toast.error("Silakan login terlebih dahulu");
-    setRegistering(true);
-    try {
-      await api.post(`/events/${id}/register`);
-      toast.success("Berhasil mendaftar event!");
-      setIsRegistered(true);
-      fetchEvent();
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Gagal mendaftar");
-    } finally {
-      setRegistering(false);
-    }
-  };
 
   const handleCancel = async () => {
     if (!confirm("Batalkan pendaftaran?")) return;
@@ -54,23 +37,6 @@ export default function EventDetail() {
     }
   };
 
-  const handleGuestRegister = async (e) => {
-    e.preventDefault();
-    setRegistering(true);
-    try {
-      const { data } = await api.post(`/events/${id}/register-guest`, guestForm);
-      setGuestSuccess(data);
-      setShowGuestForm(false);
-      setGuestForm({ guestName: "", guestEmail: "", guestPhone: "" });
-      toast.success("Pendaftaran berhasil!");
-      fetchEvent();
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Gagal mendaftar");
-    } finally {
-      setRegistering(false);
-    }
-  };
-
   if (loading) return <div className="text-center py-20 text-gray-500">Memuat...</div>;
   if (!event) return <div className="text-center py-20 text-gray-500">Event tidak ditemukan</div>;
 
@@ -78,7 +44,6 @@ export default function EventDetail() {
   const isFull = regCount >= event.maxParticipants;
   const isPastDeadline = new Date() > new Date(event.registrationDeadline);
   const isOpen = event.status === "upcoming" && !isFull && !isPastDeadline;
-  const canMemberRegister = isOpen && !isRegistered;
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
@@ -89,7 +54,8 @@ export default function EventDetail() {
         </Link>
       </div>
 
-      <div className="card mb-6">        <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
+      <div className="card mb-6">
+        <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
           <span className={`badge ${statusColor[event.status]}`}>{statusLabel[event.status]}</span>
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <span>{event.category === "single" ? "Tunggal" : event.category === "double" ? "Ganda" : "Beregu"}</span>
@@ -117,7 +83,6 @@ export default function EventDetail() {
               <div className="font-semibold text-gray-900">{item.value}</div>
             </div>
           ))}
-          {/* Biaya */}
           <div className="bg-gray-50 rounded-lg p-3">
             <div className="text-xs text-gray-500 mb-1">💰 Biaya Pendaftaran</div>
             <div className="font-semibold text-gray-900">
@@ -138,92 +103,27 @@ export default function EventDetail() {
           </div>
         )}
 
-        {/* Pendaftaran Anggota */}
+        {/* Registration Section */}
         {isOpen && (
           <div className="space-y-3">
-            {user ? (
-              isRegistered ? (
-                <div className="flex items-center gap-3">
-                  <div className="bg-green-100 text-green-800 px-4 py-2 rounded-lg font-medium text-sm">✓ Sudah Terdaftar sebagai Anggota</div>
-                  {event.status === "upcoming" && (
-                    <button onClick={handleCancel} className="btn-danger text-sm">Batalkan</button>
-                  )}
-                </div>
-              ) : (
-                <button onClick={handleRegister} disabled={registering} className="btn-primary">
-                  {registering ? "Mendaftar..." : `Daftar sebagai Anggota${event.fee > 0 ? ` (Rp ${event.fee.toLocaleString("id-ID")})` : " (Gratis)"}`}
-                </button>
-              )
-            ) : (
+            {isRegistered ? (
               <div className="flex items-center gap-3 flex-wrap">
-                <Link to="/login" className="btn-primary text-sm">Login untuk Daftar sebagai Anggota</Link>
+                <div className="bg-green-100 text-green-800 px-4 py-2 rounded-lg font-medium text-sm">✓ Sudah Terdaftar</div>
+                <button onClick={handleCancel} className="btn-danger text-sm">Batalkan Pendaftaran</button>
               </div>
-            )}
-
-            {/* Pendaftaran Non-Anggota */}
-            {event.allowNonMember && !guestSuccess && (
-              <div>
-                {!showGuestForm ? (
-                  <button onClick={() => setShowGuestForm(true)} className="border-2 border-orange-400 text-orange-700 hover:bg-orange-50 font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
-                    Daftar sebagai Non-Anggota{event.nonMemberFee > 0 ? ` (Rp ${event.nonMemberFee.toLocaleString("id-ID")})` : " (Gratis)"}
-                  </button>
-                ) : (
-                  <div className="border-2 border-orange-200 rounded-xl p-5 bg-orange-50">
-                    <h3 className="font-bold text-orange-800 mb-1">Pendaftaran Non-Anggota</h3>
-                    <p className="text-orange-700 text-sm mb-4">
-                      Biaya pendaftaran: <strong>{event.nonMemberFee > 0 ? `Rp ${event.nonMemberFee.toLocaleString("id-ID")}` : "Gratis"}</strong>
-                    </p>
-                    <form onSubmit={handleGuestRegister} className="space-y-3">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                        <input type="text" required className="input" placeholder="Nama peserta"
-                          value={guestForm.guestName} onChange={(e) => setGuestForm({ ...guestForm, guestName: e.target.value })} />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <input type="email" required className="input" placeholder="email@contoh.com"
-                          value={guestForm.guestEmail} onChange={(e) => setGuestForm({ ...guestForm, guestEmail: e.target.value })} />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">No. Telepon</label>
-                        <input type="tel" required className="input" placeholder="08xxxxxxxxxx"
-                          value={guestForm.guestPhone} onChange={(e) => setGuestForm({ ...guestForm, guestPhone: e.target.value })} />
-                      </div>
-                      <div className="flex gap-3">
-                        <button type="submit" disabled={registering} className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
-                          {registering ? "Mendaftar..." : "Konfirmasi Pendaftaran"}
-                        </button>
-                        <button type="button" onClick={() => setShowGuestForm(false)} className="btn-secondary text-sm">Batal</button>
-                      </div>
-                    </form>
-                  </div>
-                )}
-              </div>
+            ) : (
+              <button onClick={() => setShowRegistrationModal(true)} className="btn-primary w-full sm:w-auto">
+                📝 Daftar Event
+              </button>
             )}
           </div>
         )}
 
-        {/* Sukses non-anggota */}
-        {guestSuccess && (
-          <div className="bg-green-50 border border-green-200 rounded-xl p-5">
-            <div className="font-bold text-green-800 mb-2">✓ Pendaftaran Berhasil!</div>
-            <p className="text-green-700 text-sm">
-              <strong>{guestSuccess.guestName}</strong> berhasil terdaftar sebagai peserta non-anggota.
-            </p>
-            {guestSuccess.feeCharged > 0 && (
-              <p className="text-green-700 text-sm mt-1">
-                Silakan lakukan pembayaran sebesar <strong>Rp {guestSuccess.feeCharged.toLocaleString("id-ID")}</strong> ke sekretariat club.
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* Tidak bisa daftar */}
         {!isOpen && event.status !== "completed" && (
-          <div className="text-sm text-gray-500">
-            {isFull ? "Kuota peserta sudah penuh"
-              : isPastDeadline ? "Batas pendaftaran sudah lewat"
-              : "Pendaftaran tidak tersedia"}
+          <div className="text-sm text-gray-500 p-3 bg-gray-50 rounded-lg">
+            {isFull ? "❌ Kuota peserta sudah penuh"
+              : isPastDeadline ? "❌ Batas pendaftaran sudah lewat"
+              : "❌ Pendaftaran tidak tersedia"}
           </div>
         )}
       </div>
@@ -247,18 +147,23 @@ export default function EventDetail() {
                     )}
                   </div>
                 </div>
-                <div className="text-right shrink-0">
-                  <span className={`badge ${reg.status === "confirmed" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}`}>
-                    {reg.status === "confirmed" ? "Dikonfirmasi" : "Menunggu"}
-                  </span>
-                  {reg.feeCharged > 0 && (
-                    <div className="text-xs text-gray-500 mt-1">Rp {reg.feeCharged.toLocaleString("id-ID")}</div>
-                  )}
-                </div>
               </div>
             ))}
           </div>
         </div>
+      )}
+
+      {/* Registration Modal */}
+      {showRegistrationModal && (
+        <EventRegistrationModal
+          event={event}
+          user={user}
+          onClose={() => setShowRegistrationModal(false)}
+          onSuccess={() => {
+            setIsRegistered(true);
+            fetchEvent();
+          }}
+        />
       )}
     </div>
   );

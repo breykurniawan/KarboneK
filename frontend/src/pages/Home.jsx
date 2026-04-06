@@ -22,7 +22,7 @@ export default function Home() {
       <section className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 text-white py-24 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <div className="text-6xl mb-4">🏓</div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Club Tenis Meja Garuda</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Karboneʞ</h1>
           <p className="text-xl text-blue-200 mb-8 max-w-2xl mx-auto">
             Bergabunglah bersama kami dan kembangkan kemampuan tenis meja Anda bersama pelatih berpengalaman dan komunitas yang solid.
           </p>
@@ -76,7 +76,7 @@ export default function Home() {
           <div>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Tentang Club Kami</h2>
             <p className="text-gray-600 mb-4">
-              Club Tenis Meja Garuda berdiri sejak tahun 2010 dengan visi menjadi club tenis meja terbaik di Indonesia. Kami memiliki fasilitas latihan modern dan pelatih bersertifikat nasional.
+              Karboneʞ berdiri sejak tahun 2010 dengan visi menjadi club tenis meja terbaik di Indonesia. Kami memiliki fasilitas latihan modern dan pelatih bersertifikat nasional.
             </p>
             <p className="text-gray-600 mb-6">
               Dengan lebih dari 100 anggota aktif, kami rutin mengadakan latihan, turnamen internal, dan mengikuti kejuaraan tingkat daerah hingga nasional.
