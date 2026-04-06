@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  password     String
+  role         String        @default("member") // admin | member
+  phone        String?
+  avatar       String?
+  joinedAt     DateTime      @default(now())
+  registrations Registration[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Event {
+  id            Int           @id @default(autoincrement())
+  title         String
+  description   String
+  category      String        // single | double | team
+  level         String        // open | beginner | intermediate | advanced
+  startDate     DateTime
+  endDate       DateTime
+  registrationDeadline DateTime
+  location      String
+  maxParticipants Int
+  fee           Float         @default(0)       // biaya untuk anggota club
+  nonMemberFee  Float         @default(0)       // biaya untuk non-anggota (0 = tidak menerima non-anggota)
+  allowNonMember Boolean      @default(false)   // apakah menerima peserta non-anggota
+  prize         String?
+  image         String?
+  status        String        @default("upcoming") // upcoming | ongoing | completed | cancelled
+  registrations Registration[]
+  matches       Match[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model Registration {
+  id              Int      @id @default(autoincrement())
+  userId          Int?     // null jika non-anggota
+  eventId         Int
+  participantType String   @default("member") // member | non_member
+  // Data non-anggota (diisi jika participantType = non_member)
+  guestName       String?
+  guestEmail      String?
+  guestPhone      String?
+  feeCharged      Float    @default(0)
+  status          String   @default("pending") // pending | confirmed | cancelled
+  paidAt          DateTime?
+  user            User?    @relation(fields: [userId], references: [id])
+  event           Event    @relation(fields: [eventId], references: [id])
+  createdAt       DateTime @default(now())
+
+  @@unique([userId, eventId])
+}
+
+model Match {
+  id           Int       @id @default(autoincrement())
+  eventId      Int
+  round        Int       // 1 = babak pertama, 2 = perempat final, dst
+  matchNumber  Int       // nomor urut pertandingan dalam satu babak
+  // Peserta 1
+  player1RegId Int?
+  player1Score Int?
+  // Peserta 2
+  player2RegId Int?
+  player2Score Int?
+  // Pemenang
+  winnerId     Int?      // Registration.id pemenang
+  // Relasi ke match berikutnya
+  nextMatchId  Int?
+  status       String    @default("pending") // pending | ongoing | completed | bye
+  scheduledAt  DateTime?
+  event        Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model News {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  image     String?
+  author    String
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Gallery {
+  id          Int      @id @default(autoincrement())
+  title       String
+  imageUrl    String
+  category    String   @default("general")
+  createdAt   DateTime @default(now())
+}
