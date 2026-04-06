@@ -1,7 +1,9 @@
+# Railway deployment configuration
+# See: https://docs.railway.app
+
 [build]
-builder = "NIXPACKS"
+# NIXPACKS auto-detects Node.js and uses Procfile + package.json
 
 [deploy]
-startCommand = "npm start"
-restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 3
+# Procfile takes precedence for start command and release hooks
+
